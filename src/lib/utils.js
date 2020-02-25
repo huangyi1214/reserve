@@ -2,6 +2,7 @@ let fs = require('fs');
 let iconv = require('iconv-lite');
 let config = require('../../config');
 let request = require('request');
+let crypto = require('crypto');
 exports.checkLogin = function (req, res, next) {
 	if (req && req.session && req.session.user) {
 		next();
@@ -330,7 +331,6 @@ exports.getClientIp = function (req) {
 	}
 
 }
-
 
 
 /**获取当前时间 */
