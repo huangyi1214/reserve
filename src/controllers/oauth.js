@@ -8,7 +8,7 @@ let redis = require('../lib/redis');
 let config = require('../../config');
 let utils = require('../lib/utils');
 let nodemailer = require('nodemailer');
-let Redlock = require('Redlock');
+let Redlock = require('redlock');
 
 let log4js = require('../lib/log');
 const logger = log4js.logger('oauth');
