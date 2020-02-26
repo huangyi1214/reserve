@@ -318,7 +318,7 @@ class OAuth {
                         (SELECT 1 UNION SELECT 2 ) xc1, \
                         (SELECT 1 UNION SELECT 2 UNION SELECT 3 ) xc2, \
                         (SELECT @xi:=0) xc0 \
-            ) a) b) c left join t_bdc_reserve d on c.date=d.date and c.time=d.time\
+            ) a) b) c left join t_bdc_reserve d on c.date=d.date and c.time=d.time order by c.time,c.date\
             ", {
             replacements: [],
             type: db.default.QueryTypes.SELECT
@@ -375,18 +375,49 @@ class OAuth {
 
             }
             else {
-                t = await db.default.transaction()
-                let reserve = {
-                    date: req.body.date,
-                    time: req.body.time,
-                    num: 1
-                };
-                await db.default.models.t_bdc_reserve.create(reserve, { transaction: t });
-                t.commit();
-                redisClient_reserve.set(req.body.date + '&' + req.body.time, 1);
-                lock.unlock();
+                //查询数据库中的预约次数
+                let result = await db.default.models.t_bdc_reserve.findOne({
+                    where: {
+                        date: req.body.date,
+                        time: req.body.time
+                    }
+                })
+                let reservenum_sql = 0;
+                let ishas = false;
+                if (result) {
+                    reservenum_sql = result.num + 1;
+                    ishas = true;
+                }
+                else {
+                    reservenum_sql = 1;
+                    ishas = false;
+                }
+                if (reservenum_sql < 6) {
+                    // console.log('数据库中的预约次数：'+JSON.stringify(result));
+                    // return res.json({ code: 0, message: '预约成功' });;
+                    t = await db.default.transaction()
+                    let reserve = {
+                        date: req.body.date,
+                        time: req.body.time,
+                        num: reservenum_sql
+                    };
+                    if (ishas) {
+                        await db.default.models.t_bdc_reserve.update(reserve, { where: { date: req.body.date, time: req.body.time }, transaction: t });
+                    }
+                    else {
+                        await db.default.models.t_bdc_reserve.create(reserve, { transaction: t });
+                    }
+                    t.commit();
+                    redisClient_reserve.set(req.body.date + '&' + req.body.time, reservenum_sql);
+                    lock.unlock();
 
-                return res.json({ code: 0, message: '预约成功' });
+                    return res.json({ code: 0, message: '预约成功' });
+                }
+                else {
+                    return res.json({ code: 406, message: '已达到该时间段预约上限，相同时间段内最多预约6次' });
+
+                }
+
 
             }
         }
