@@ -32,7 +32,7 @@
     "mysql2": "^1.4.2",
     "nodemailer": "^5.1.1",
     "pnglib": "^0.0.1",
-    "protobufjs": "^3.8.2",
+    "protobufjs": "^5.0.3",
     "qcloudsms_js": "^0.1.1",
     "redis": "^2.8.0",
     "redlock": "^4.1.0",
