@@ -30,7 +30,7 @@
     "log4js": "^2.3.3",
     "mocha": "^7.0.1",
     "mysql2": "^1.4.2",
-    "nodemailer": "^5.1.1",
+    "nodemailer": "^6.4.16",
     "pnglib": "^0.0.1",
     "protobufjs": "^3.8.2",
     "qcloudsms_js": "^0.1.1",
