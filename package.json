@@ -28,7 +28,7 @@
     "express-session": "^1.15.6",
     "iconv-lite": "^0.4.19",
     "log4js": "^2.3.3",
-    "mocha": "^7.0.1",
+    "mocha": "^10.2.0",
     "mysql2": "^1.4.2",
     "nodemailer": "^5.1.1",
     "pnglib": "^0.0.1",
